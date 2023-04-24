@@ -58,3 +58,19 @@
 .imgRegular {
   width: 700px;
 }
+.paginateList {
+  display: flex;
+  flex-direction: row;
+}
+.paginateElement {
+  color: rgb(0, 155, 134);
+  margin-right: 20px;
+  cursor: pointer;
+}
+.paginateElement:last-child {
+  margin-right: 0;
+}
+.paginateElement:hover {
+  color: rgb(3, 99, 86);
+  text-decoration: underline;
+}

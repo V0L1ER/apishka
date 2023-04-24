@@ -1,16 +1,19 @@
 const app = document.getElementById("app");
 
-async function fetchQ() {
+async function fetchQ(countPage) {
   const users = await fetch(
-    "https://api.unsplash.com/photos/?client_id=ab3411e4ac868c2646c0ed488dfd919ef612b04c264f3374c97fff98ed253dc9&page=1"
+    `https://api.unsplash.com/photos/?client_id=ab3411e4ac868c2646c0ed488dfd919ef612b04c264f3374c97fff98ed253dc9&page=${
+      countPage === undefined ? "1" : countPage
+    }`
   );
   const json = await users.json();
   return json;
 }
 
-async function main() {
-  const gUsers = await fetchQ();
+async function main(Page) {
+  const gUsers = await fetchQ(Page);
   createListHTML(gUsers);
+  paginationHTML();
 }
 
 function createListHTML(users) {
@@ -34,6 +37,7 @@ function createListHTML(users) {
 }
 
 function openUserProfile(users, index) {
+  const paginateEl = document.querySelector(".paginateList");
   const div = document.querySelectorAll(".names");
   const img = document.createElement("img");
   const app = document.querySelector("#app");
@@ -41,6 +45,8 @@ function openUserProfile(users, index) {
   const titletext = document.querySelector(".titletext");
   const imgRegularArr = users.map((user) => user.urls.regular);
   const namesArr = users.map((user) => user.user.name);
+
+  paginateEl.remove();
 
   div.forEach((item) => {
     item.classList.remove("names");
@@ -53,9 +59,45 @@ function openUserProfile(users, index) {
   img.src = imgRegularArr[index];
   img.classList.add("imgRegular");
   arrow.addEventListener("click", () => {
-    location.reload();
+    const imgRegular = document.querySelector(".imgRegular");
+    imgRegular.remove();
+    const div = document.querySelectorAll(".hide");
+    div.forEach((item) => {
+      item.classList.add("names");
+      item.classList.remove("hide");
+    });
+    const paginateEl = document.createElement("div");
+    paginateEl.classList.add("paginateList");
+    paginationHTML();
+    const titletext = document.querySelector(".titletext");
+    titletext.textContent = "Users List";
   });
   app.appendChild(img);
+}
+
+function paginationHTML() {
+  const pagesNums = Array.from(Array(10), (_, i) => i + 1);
+  const app = document.querySelector("#app");
+  const divPaginate = document.createElement("div");
+  divPaginate.classList.add("paginateList");
+
+  pagesNums.forEach((item) => {
+    const div = document.createElement("div");
+    div.textContent = item;
+    div.classList.add("paginateElement");
+    div.addEventListener("click", () => {
+      main(item);
+    });
+    divPaginate.appendChild(div);
+  });
+  divPaginate.addEventListener("click", () => {
+    const namesElements = document.querySelectorAll(".names");
+    const paginateEl = document.querySelector(".paginateList");
+    namesElements.forEach((el) => el.remove());
+    paginateEl.remove();
+  });
+
+  app.appendChild(divPaginate);
 }
 
 main();
