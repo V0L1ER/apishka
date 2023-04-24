@@ -52,12 +52,10 @@ function openUserProfile(users, index) {
   titletext.textContent = namesArr[index];
   img.src = imgRegularArr[index];
   img.classList.add("imgRegular");
-  arrow.addEventListener("click", () => backToMenuPage());
+  arrow.addEventListener("click", () => {
+    location.reload();
+  });
   app.appendChild(img);
-}
-
-function backToMenuPage() {
-  location.reload();
 }
 
 main();
